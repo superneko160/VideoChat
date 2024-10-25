@@ -53,7 +53,7 @@ class Signaling {
             $sql = 'SELECT * FROM signaling_messages WHERE receiver = :receiver AND id > :last_id ORDER BY id ASC';
             $stmt = $this->db->prepare($sql);
             $stmt->bindValue('receiver', $data['receiver'], PDO::PARAM_STR);
-            $stmt->bindValue(':last_id', $last_id, PDO::PARAM_INT);
+            $stmt->bindValue('last_id', $last_id, PDO::PARAM_INT);
             $stmt->execute();
         } catch (PDOException $e) {
             Logger::dumpLog(
@@ -69,6 +69,32 @@ class Signaling {
             return json_encode(['status' => 'success', 'data' => $messages]);
         } else {
             return json_encode(['status' => 'empty', 'message' => 'No new messages']);
+        }
+    }
+
+    /**
+     * SDP or ICE Candidate削除
+     * @param array $data GETデータ
+     * @return string レスポンス
+     */
+    public function delete(array $data) {
+        try {
+            $sql = 'DELETE FROM signaling_messages WHERE sender = :sender OR receiver = :sender';
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue('sender', $data['sender'], PDO::PARAM_STR);
+            $stmt->bindValue('receiver', $data['sender'], PDO::PARAM_STR);
+            $result = $stmt->execute();
+        } catch (PDOException $e) {
+            Logger::dumpLog(
+                './../log/error.log',
+                date('Y/m/d H:i:s') . ' ' . __CLASS__ . ':' . __METHOD__ . ' ' . $e->getMessage(),
+                'a'
+            );
+        }
+        if ($result) {
+            return json_encode(['status' => 'success', 'message' => 'Delete Messages']);
+        } else {
+            return json_encode(['status' => 'error', 'message' => 'Error: ' . $db->error]);
         }
     }
 }
