@@ -8,18 +8,18 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 $signaling = new Signaling();
 
-// SDP登録
+// SDP or ICE Candidate登録
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     echo $signaling->store($data);
 }
 
-// SDP取得
+// SDP or ICE Candidate取得
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     echo $signaling->read($_GET);
 }
 
-// 
+//  SDP or ICE Candidate削除
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     $parts = explode('/', trim($path, '/'));
