@@ -14,6 +14,9 @@ let remoteMediaStream;
 const iceCandidates = [];  // ローカル側のICE Candidateの一覧
 let lastMessageId = 0;
 
+// 起動時Hungupボタン無効化しておく
+disableButton(hungupButton);
+
 // WebRTCのコネクションオブジェクトを作成
 let peer = createRTCPeerConnection();
 
@@ -35,6 +38,10 @@ callButton.addEventListener('click', async () => {
     sendMessage(sessionDescription);
     // ポーリング開始
     pollMessages();
+    // Callボタン無効化
+    disableButton(callButton);
+    // Hungupボタン有効化
+    enableButton(hungupButton);
 });
 
 /**
@@ -79,6 +86,10 @@ hungupButton.addEventListener('click', async () => {
 
         lastMessageId = 0;  // メッセージIDをリセット
 
+        // Callボタンの有効化
+        enableButton(callButton);
+        // Hungupボタンの無効化
+        disableButton(hungupButton);
     } catch (error) {
         console.error('切断処理中にエラーが発生:', error);
     }
