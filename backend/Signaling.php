@@ -49,12 +49,16 @@ class Signaling {
     public function read(array $data) {
         $last_id = isset($data['last_id']) ? intval($data['last_id']) : 0;
 
+        $messages = [];
+
         try {
             $sql = 'SELECT * FROM signaling_messages WHERE receiver = :receiver AND id > :last_id ORDER BY id ASC';
             $stmt = $this->db->prepare($sql);
             $stmt->bindValue('receiver', $data['receiver'], PDO::PARAM_STR);
             $stmt->bindValue('last_id', $last_id, PDO::PARAM_INT);
             $stmt->execute();
+
+            $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             Logger::dumpLog(
                 './../log/error.log',
@@ -62,8 +66,6 @@ class Signaling {
                 'a'
             );
         }
-
-        $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (!empty($messages)) {
             return json_encode(['status' => 'success', 'data' => $messages]);
