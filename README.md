@@ -15,3 +15,7 @@
 - MySQL
 - Tailwind CSS
 - WebRTC
+
+## SDPとIce Candidateのデータフロー
+
+![Data Flow chart](https://github.com/superneko160/VideoChat/blob/main/docs/videochat.drawio.svg)
