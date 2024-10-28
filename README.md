@@ -11,7 +11,7 @@
 
 - HTML/CSS
 - JavaScript
-- PHP
+- PHP8.2
 - MySQL
 - Tailwind CSS
 - WebRTC
